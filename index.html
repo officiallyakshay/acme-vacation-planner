@@ -42,8 +42,18 @@
       constructor() {
         super();
         this.state = {
-          user: {}
+          user: {},
+          startDate: '',
+          endDate: ''
         }
+        this.createVacation = this.createVacation.bind(this);
+      }
+      createVacation(ev) {
+        const value = ev.target.name;
+        console.log(value)
+        // const created = (await axios.post(`${API}/users/${this.state.user.id}`, {  } )).data;
+        // const notes = [...this.state.notes, created ];
+        this.setState( {[ ev.target.name ]: ev.target.value } )
       }
       async componentDidMount() {
         const user = await fetchUser();
@@ -51,24 +61,24 @@
         this.setState({ user });
       }
       render() {
-        const { user } = this.state;
+        const { user, startDate, endDate } = this.state;
+        const { createVacation } = this;
         return (
             <div>
             <h1> Acme Vacation Planner for {user.fullName} </h1>
             <div>
-              <form id='form'>
-                <input />
-                <input />
-                <button>Create Vacation</button>
+              <form id='form' onSubmit={ ev => ev.preventDefault() }>
+                <input name='startDate' value = { startDate } onChange = { createVacation } />
+                <input name='endDate' value = { endDate } onChange = { createVacation } />
+                <button onClick = { createVacation } >Create Vacation</button>
               </form>
             </div>
           </div>
-          
         )
       }
     } 
     const root = document.querySelector('#root');
-    render( < App />, root )
+    render( < App /> , root )
   </script>
 </body>
 </html>
