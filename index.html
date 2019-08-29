@@ -40,12 +40,21 @@
 
     const Vacations = ({vacations}) => {
       console.log(vacations);
+      const startDate = vacations.map( vacation => moment(vacation.data.startDate, 'MM-DD-YYYY'));
+      console.log(startDate)
       return (
         <div>
         {
           vacations.map(vacation =>
           <div key={vacation.data.id}>
-            {vacation.data.startDate} <br /> to {vacation.data.endDate} <br />
+            {
+
+            } 
+            <br /> 
+            to 
+            < br /> 
+            {vacation.data.endDate} 
+            <hr />
           </div>)
         }
         </div>
