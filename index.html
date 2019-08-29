@@ -1,0 +1,74 @@
+<html>
+<head>
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js'></script>
+  <style>
+    .form {
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body>
+  <div id='root'></div>
+  <script type='text/babel'>
+    
+    const { Component } = React;
+    const { render } = ReactDOM;
+
+    const API = 'https://acme-users-api-rev.herokuapp.com/api';
+
+    const fetchUser = async ()=> {
+      const storage = window.localStorage;
+      const userId = storage.getItem('userId'); 
+      if(userId){
+        try {
+          return (await axios.get(`${API}/users/detail/${userId}`)).data;
+        }
+        catch(ex){
+          storage.removeItem('userId');
+          return fetchUser();
+        }
+      }
+      const user = (await axios.get(`${API}/users/random`)).data;
+      storage.setItem('userId', user.id);
+      return user;
+    };
+
+    class App extends Component {
+      constructor() {
+        super();
+        this.state = {
+          user: {}
+        }
+      }
+      async componentDidMount() {
+        const user = await fetchUser();
+        console.log(user)
+        this.setState({ user });
+      }
+      render() {
+        const { user } = this.state;
+        return (
+            <div>
+            <h1> Acme Vacation Planner for {user.fullName} </h1>
+            <div>
+              <form id='form'>
+                <input />
+                <input />
+                <button>Create Vacation</button>
+              </form>
+            </div>
+          </div>
+          
+        )
+      }
+    } 
+    const root = document.querySelector('#root');
+    render( < App />, root )
+  </script>
+</body>
+</html>
